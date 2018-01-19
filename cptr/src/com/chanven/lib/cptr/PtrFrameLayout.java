@@ -817,9 +817,9 @@ public class PtrFrameLayout extends ViewGroup {
         mPtrIndicator.setResistance(resistance);
     }
 
-//    public void setUnderTouch(boolean underTouch) {
-//        mPtrIndicator.setUnderTouch(underTouch);
-//    }
+    public void setUnderTouch(boolean underTouch) {
+        mPtrIndicator.setUnderTouch(underTouch);
+    }
 
     public PtrIndicator getPtrIndicator() {
         return mPtrIndicator;

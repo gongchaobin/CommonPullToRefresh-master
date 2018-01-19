@@ -33,6 +33,10 @@ public class PtrIndicator {
         mResistance = resistance;
     }
 
+    public void setUnderTouch(boolean isUnderTouch) {
+        this.mIsUnderTouch = isUnderTouch;
+    }
+
     public void onRelease() {
         mIsUnderTouch = false;
     }
