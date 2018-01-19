@@ -84,6 +84,7 @@ public class PtrFrameLayout extends ViewGroup {
     private long mLoadingStartTime = 0;
     private PtrIndicator mPtrIndicator;
     private boolean mHasSendCancelEvent = false;
+    private int mHorizontalMoveSlop=20;//设置水平滑动的灵敏性
 
     public PtrFrameLayout(Context context) {
         this(context, null);
@@ -98,32 +99,33 @@ public class PtrFrameLayout extends ViewGroup {
 
         mPtrIndicator = new PtrIndicator();
 
-        TypedArray arr = context.obtainStyledAttributes(attrs, com.chanven.lib.cptr.R.styleable.PtrFrameLayout, 0, 0);
+        TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.PtrFrameLayout, 0, 0);
         if (arr != null) {
 
-            mHeaderId = arr.getResourceId(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_header, mHeaderId);
-            mContainerId = arr.getResourceId(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_content, mContainerId);
+            mHeaderId = arr.getResourceId(R.styleable.PtrFrameLayout_ptr_header, mHeaderId);
+            mContainerId = arr.getResourceId(R.styleable.PtrFrameLayout_ptr_content, mContainerId);
 
             mPtrIndicator.setResistance(
-                    arr.getFloat(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_resistance, mPtrIndicator.getResistance()));
+                    arr.getFloat(R.styleable.PtrFrameLayout_ptr_resistance, mPtrIndicator.getResistance()));
 
-            mDurationToClose = arr.getInt(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_duration_to_close, mDurationToClose);
-            mDurationToCloseHeader = arr.getInt(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_duration_to_close_header, mDurationToCloseHeader);
+            mDurationToClose = arr.getInt(R.styleable.PtrFrameLayout_ptr_duration_to_close, mDurationToClose);
+            mDurationToCloseHeader = arr.getInt(R.styleable.PtrFrameLayout_ptr_duration_to_close_header, mDurationToCloseHeader);
 
             float ratio = mPtrIndicator.getRatioOfHeaderToHeightRefresh();
-            ratio = arr.getFloat(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_ratio_of_header_height_to_refresh, ratio);
+            ratio = arr.getFloat(R.styleable.PtrFrameLayout_ptr_ratio_of_header_height_to_refresh, ratio);
             mPtrIndicator.setRatioOfHeaderHeightToRefresh(ratio);
 
-            mKeepHeaderWhenRefresh = arr.getBoolean(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_keep_header_when_refresh, mKeepHeaderWhenRefresh);
+            mKeepHeaderWhenRefresh = arr.getBoolean(R.styleable.PtrFrameLayout_ptr_keep_header_when_refresh, mKeepHeaderWhenRefresh);
 
-            mPullToRefresh = arr.getBoolean(com.chanven.lib.cptr.R.styleable.PtrFrameLayout_ptr_pull_to_fresh, mPullToRefresh);
+            mPullToRefresh = arr.getBoolean(R.styleable.PtrFrameLayout_ptr_pull_to_fresh, mPullToRefresh);
             arr.recycle();
         }
 
         mScrollChecker = new ScrollChecker();
 
         final ViewConfiguration conf = ViewConfiguration.get(getContext());
-        mPagingTouchSlop = conf.getScaledTouchSlop() * 2;
+//        mPagingTouchSlop = conf.getScaledTouchSlop() * 2;
+        mPagingTouchSlop = conf.getScaledTouchSlop();
     }
 
     @Override
@@ -312,13 +314,22 @@ public class PtrFrameLayout extends ViewGroup {
                 float offsetX = mPtrIndicator.getOffsetX();
                 float offsetY = mPtrIndicator.getOffsetY();
 
-                if (mDisableWhenHorizontalMove && !mPreventForHorizontal && (Math.abs(offsetX) > mPagingTouchSlop && Math.abs(offsetX) > Math.abs(offsetY))) {
-                    if (mPtrIndicator.isInStartPosition()) {
-                        mPreventForHorizontal = true;
-                    }
+//                if (mDisableWhenHorizontalMove && !mPreventForHorizontal && (Math.abs(offsetX) > mPagingTouchSlop && Math.abs(offsetX) > Math.abs(offsetY))) {
+//                    if (mPtrIndicator.isInStartPosition()) {
+//                        mPreventForHorizontal = true;
+//                    }
+//                }
+//                if (mPreventForHorizontal) {
+//                    return dispatchTouchEventSupper(e);
+//                }
+                if (mDisableWhenHorizontalMove && (Math.abs(offsetX) > mHorizontalMoveSlop && Math.abs(offsetX) > Math.abs(offsetY))) {
+                    mPreventForHorizontal = true;
                 }
+
                 if (mPreventForHorizontal) {
-                    return dispatchTouchEventSupper(e);
+                    dispatchTouchEventSupper(e);
+                    return true;
+
                 }
 
                 boolean moveDown = offsetY > 0;
@@ -806,6 +817,14 @@ public class PtrFrameLayout extends ViewGroup {
         mPtrIndicator.setResistance(resistance);
     }
 
+//    public void setUnderTouch(boolean underTouch) {
+//        mPtrIndicator.setUnderTouch(underTouch);
+//    }
+
+    public PtrIndicator getPtrIndicator() {
+        return mPtrIndicator;
+    }
+
     @SuppressWarnings({"unused"})
     public float getDurationToClose() {
         return mDurationToClose;
@@ -1039,7 +1058,7 @@ public class PtrFrameLayout extends ViewGroup {
             mIsRunning = true;
         }
     }
-    
+
     private boolean isLoadingMore = false;
     private boolean isAutoLoadMoreEnable = true;
     private boolean isLoadMoreEnable = false;
@@ -1074,7 +1093,7 @@ public class PtrFrameLayout extends ViewGroup {
         }
 
     }
-    
+
     public void setLoadMoreEnable(boolean loadMoreEnable) {
         if (this.isLoadMoreEnable == loadMoreEnable) {
             return;
@@ -1168,6 +1187,15 @@ public class PtrFrameLayout extends ViewGroup {
 
     public void setOnLoadMoreListener(OnLoadMoreListener loadMoreListener) {
         this.mOnLoadMoreListener = loadMoreListener;
+    }
+
+    public void addChildView(View emptyView) {
+        if(this.mContent != null && emptyView != null && emptyView != this.mContent) {
+            this.removeView(this.mContent);
+        }
+
+        this.mContent = emptyView;
+        this.addView(emptyView);
     }
 
 }
