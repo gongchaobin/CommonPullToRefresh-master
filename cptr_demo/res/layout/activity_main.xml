@@ -40,5 +40,14 @@
         android:onClick="goSwipeListView"
         android:text="@string/swipe_listview_with_loadmore"
         android:textAllCaps="false" />
+
+
+    <Button
+        android:textAllCaps="false"
+        android:text="@string/pinnedSectionRecylerView"
+        android:onClick="goPinnedSection"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     
 </LinearLayout>

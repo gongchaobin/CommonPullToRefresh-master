@@ -8,5 +8,6 @@
     <string name="recyclerview_with_loadmore">Recyclerview with loadmore</string>
     <string name="gridview_with_loadmore">GridView With LoadMore</string>
     <string name="swipe_listview_with_loadmore">SwipeRefreshLayout ListView With LoadMore</string>
+    <string name="pinnedSectionRecylerView">PinnedSectionRecylerView</string>
 
 </resources>

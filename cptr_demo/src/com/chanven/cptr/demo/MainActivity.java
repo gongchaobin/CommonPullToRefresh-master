@@ -43,4 +43,9 @@ public class MainActivity extends AppCompatActivity {
     public void goSwipeListView(View view) {
         startActivity(new Intent(this, SwipeListViewActivity.class));
     }
+
+    public void goPinnedSection(View view) {
+        startActivity(new Intent(this,PinnedSectionRecylerViewActivity.class));
+    }
+
 }

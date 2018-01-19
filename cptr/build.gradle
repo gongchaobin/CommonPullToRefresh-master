@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven'
 
 version = "1.1.0"
 
@@ -9,10 +9,29 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.1.0'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.gong'
+    PUBLISH_ARTIFACT_ID = 'pullToRefresh'
+    PUBLISH_VERSION = android.defaultConfig.versionName
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(getProperty('aar.deployPath'))
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId project.PUBLISH_GROUP_ID
+            artifactId project.PUBLISH_ARTIFACT_ID
+            version 1.1
+        }
+    }
+}
+
+
 android {
     compileSdkVersion 21
-    buildToolsVersion "24.0.2"
     resourcePrefix "cptr_"
+    buildToolsVersion = '25.0.3'
 
     sourceSets {
         main {

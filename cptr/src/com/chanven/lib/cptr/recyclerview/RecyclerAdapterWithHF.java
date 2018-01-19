@@ -1,8 +1,5 @@
 package com.chanven.lib.cptr.recyclerview;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -13,6 +10,9 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerAdapterWithHF extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -347,5 +347,12 @@ public class RecyclerAdapterWithHF extends RecyclerView.Adapter<RecyclerView.Vie
         }
     };
 
+    /**
+     * 提供adapter Get方法
+     * @return
+     */
+    public RecyclerView.Adapter<ViewHolder> getAdapter() {
+        return mAdapter;
+    }
 
 }
